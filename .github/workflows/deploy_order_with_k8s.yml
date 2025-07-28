@@ -41,7 +41,7 @@ jobs:
             - name: update cluster infomation
               # 클러스터 세팅
               # 그 다음 쿠버네티스에 접근을 해야한다. my-cluster 에다가 내가 kubectl을 통해서 접근할거다 라는 걸 세팅해줘야 함. (13. 클러스터 생성 및 aws cil, kubectl 세팅)
-              run: aws eks update-kubeconfig --name  my-cluster --region ap-northeast-2
+              run: aws eks update-kubeconfig --name  my-clusters --region ap-northeast-2
 
             - name: Login to ECR
               id: login-ecr
