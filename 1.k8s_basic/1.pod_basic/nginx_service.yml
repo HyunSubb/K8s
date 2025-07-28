@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: my-service
+    namespace: hyunsub
+spec:
+    # type: ClusterIP
+    # 생략시 default는 ClusterIP.
+    # NodePort, LoadBalancer등의 타입을 사용시 service를 통해 외부접근가능
+    ports:
+        - port: 80 # 이 포트는 서비스의 포트를 의미한다.
+          targetPort: 80 # 가야할 곳의 포트를 의미(pod의 내부 포트)
+    selector:
+        app: my-nginx # 이건 pod의 labels와 일치해야 한다.

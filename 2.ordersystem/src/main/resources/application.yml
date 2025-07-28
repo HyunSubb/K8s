@@ -1,0 +1,5 @@
+spring:
+    profiles:
+        default: prod
+        # prod를 사용하겠다는 설정
+        # 보통 prod는 배포 후 운영 쪽의 환경 정보
