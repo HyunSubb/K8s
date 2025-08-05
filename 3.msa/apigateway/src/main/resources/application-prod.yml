@@ -1,43 +1,43 @@
 eureka:
-  client:
-    enabled: false
+    client:
+        enabled: false # 배포 버전에서는 유레카를 쓰지 않을 것이기 때문에 false로 되어있다.
 
 spring:
-  config:
-    activate:
-      on-profile: prod
-  application:
-    name: api-gateway
-  cloud:
-    gateway:
-      #      CORS 처리. 서비스모듈에서는 웹브라우저와 직접 통신하지 않으므로, cors처리 불필요.
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins:
-              - 'https://www.example.com'
-            allowedMethods: '*'
-            allowedHeaders: '*'
-            allowedCredentials: true
-      routes:
-        - id: member-service
-          predicates:
-            - Path=/member-service/**
-          filters:
-            # StripPrefix : 첫번째 접두어를 제거후에 member-service로 http요청 전달
-            - StripPrefix=1
-          uri: http://member-service
-        - id: ordering-service
-          predicates:
-            - Path=/ordering-service/**
-          filters:
-            - StripPrefix=1
-          uri: http://ordering-service
-        - id: product-service
-          predicates:
-            - Path=/product-service/**
-          filters:
-            - StripPrefix=1
-          uri: http://product-service
+    config:
+        activate:
+            on-profile: prod
+    application:
+        name: api-gateway
+    cloud:
+        gateway:
+            #      CORS 처리. 서비스모듈에서는 웹브라우저와 직접 통신하지 않으므로, cors처리 불필요.
+            globalcors:
+                cors-configurations:
+                    "[/**]":
+                        allowedOrigins:
+                            - "https://www.example.com" # 배포 버전에서는 프런트가 있을 것이기 때문에 이렇게 설정함. 우리는 근데 프런트 배포 안할 거라서 그냥 예시url을 적어둠
+                        allowedMethods: "*"
+                        allowedHeaders: "*"
+                        allowedCredentials: true
+            routes:
+                - id: member-service
+                  predicates:
+                      - Path=/member-service/** # /member-service/* 로 들어오면~
+                  filters:
+                      # StripPrefix : 첫번째 접두어를 제거후에 member-service로 http요청 전달
+                      - StripPrefix=1
+                  uri: http://member-service # 쿠버네티스의 자원인 service의 이름이다. 그 서비스의 이름을 여기에 지정해 줌으로써 Eureka가 아닌 쿠버네티스 자원에 있는 서비스를 호출.
+                - id: ordering-service
+                  predicates:
+                      - Path=/ordering-service/**
+                  filters:
+                      - StripPrefix=1
+                  uri: http://ordering-service
+                - id: product-service
+                  predicates:
+                      - Path=/product-service/**
+                  filters:
+                      - StripPrefix=1
+                  uri: http://product-service
 jwt:
-  secretKey: YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
+    secretKey: YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5

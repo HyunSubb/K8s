@@ -1,16 +1,15 @@
-
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: argo-bradkim197-com-tls
-  namespace: argocd
+    name: argo-esktest098-com-tls
+    namespace: argocd
 spec:
-  secretName: argo-bradkim197-com-tls
-  duration: 2160h #90day
-  renewBefore: 360h #before 15day
-  issuerRef:
-    name: my-issuer
-    kind: ClusterIssuer
-  commonName: argo.bradkim197.shop
-  dnsNames:
-  - argo.bradkim197.shop
+    secretName: argo-esktest098-com-tls
+    duration: 2160h #90day
+    renewBefore: 360h #before 15day
+    issuerRef:
+        name: my-issuer
+        kind: ClusterIssuer
+    commonName: argo.esktest098.store
+    dnsNames:
+        - argo.esktest098.store

@@ -5,13 +5,14 @@ spring:
   application:
     name: product-service
   redis:
-    host: localhost
-    port: 6379
+    data:
+      host: localhost
+      port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ordermsa?useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: 1234
+    password: yourpassword
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect

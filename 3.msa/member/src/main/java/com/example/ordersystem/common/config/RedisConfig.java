@@ -12,10 +12,10 @@ import org.springframework.data.redis.core.RedisTemplate;import org.springframew
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.redis.host}")
+    @Value("${spring.redis.data.host}")
     private String host;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.redis.data.port}")
     private int port;
 
 //    redis에 접근하기 위한 접근(connection)객체

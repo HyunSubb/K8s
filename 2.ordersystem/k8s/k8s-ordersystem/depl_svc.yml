@@ -9,7 +9,7 @@ spec:
     # 근데 replicaset을 몇개를 만들거냐. rollout restart 할 때마다 쌓임. 근데 rollout restart는 매우 빈번하게 일어남.
     # replicaset이 너무 많아지면 곤란하니까 개수를 제한하는 명령어임.
     revisionHistoryLimit: 2
-    replicas: 2
+    replicas: 3
     selector:
         matchLabels:
             app: ordersystem-backend

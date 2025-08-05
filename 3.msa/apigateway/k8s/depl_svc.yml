@@ -1,43 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: apigateway-depl
-  namespace: bradkim
+    name: apigateway-depl
+    namespace: hyunsub
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: apigateway
-  template:
-    metadata:
-      labels:
-        app: apigateway
-    spec:
-      containers:
-      - name: apigateway-container
-        image: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com/apigateway:latest
-        ports:
-        - containerPort: 8080
-        resources:
-        # 컨테이너가 사용할수 있는 리소스의 최대치
-          limits:
-            cpu: "1"
-            memory: "500Mi"
-        # 컨테이너가 시작될떄 보장받아야 하는 최소 자원
-          requests:
-            cpu: "0.5"
-            memory: "250Mi"
+    replicas: 1 # 레플리카는 한 대만 실행 / 서버가 너무 많으면 pending이 될 수 있기 때문이다.
+    selector:
+        matchLabels:
+            app: apigateway
+    template:
+        metadata:
+            labels:
+                app: apigateway
+        spec:
+            containers:
+                - name: apigateway-container
+                  # ECR 주소는 우리 ECR 저장소의 주소를 적어주자. latest는 놔두고 붙여넣기 ㄱㄱ
+                  image: 384471040257.dkr.ecr.ap-northeast-2.amazonaws.com/apigateway:latest
+                  ports:
+                      - containerPort: 8080 # apigateway는 8080으로 서버를 실행시켜주자.
+                  resources:
+                      # 컨테이너가 사용할수 있는 리소스의 최대치
+                      limits:
+                          cpu: "1"
+                          memory: "500Mi"
+                      # 컨테이너가 시작될떄 보장받아야 하는 최소 자원
+                      requests:
+                          cpu: "0.5"
+                          memory: "250Mi"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: apigateway-service
-  namespace: bradkim
+    name: apigateway-service
+    namespace: hyunsub # namespace 변경
 spec:
-  type: ClusterIP
-  ports:
-  - port: 80
-    targetPort: 8080
-  selector:
-    app: apigateway
+    type: ClusterIP
+    ports:
+        - port: 80 # 서비스는 80포트로 실행
+          targetPort: 8080 # 타겟 포트는 8080
+    selector:
+        app: apigateway

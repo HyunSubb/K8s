@@ -1,98 +1,100 @@
 name: deploy order order-backend
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout github
-        uses: actions/checkout@v2
-      
-      - name: install kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: "v1.25.9"
-        id: install
-        
-      - name: configure aws
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_KEY }}
-          aws-secret-access-key:  ${{ secrets.AWS_SECRET }}
-          aws-region: ap-northeast-2
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout github
+              uses: actions/checkout@v2
 
-      - name: update cluster infomation
-        run: aws eks update-kubeconfig --name my-cluster --region ap-northeast-2
+            - name: install kubectl
+              uses: azure/setup-kubectl@v3
+              with:
+                  version: "v1.25.9"
+              id: install
 
-      - name: Login to ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+            - name: configure aws
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_KEY }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+                  aws-region: ap-northeast-2
 
+            - name: update cluster infomation
+              run: aws eks update-kubeconfig --name my-cluster --region ap-northeast-2
 
-      - name: gateway build and push docker image to ecr
-        env:
-          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
-          REPOSITORY: apigateway
-          IMAGE_TAG: latest
-        run: |
-          docker build \
-          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-          -f ./3.msa/apigateway/Dockerfile ./3.msa/apigateway
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            - name: Login to ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
 
-      - name: eks kubectl apply
-        run: |
-          kubectl apply -f ./3.msa/apigateway/k8s/depl_svc.yml
-          kubectl rollout restart deployment apigateway-depl -n bradkim
-        
-      - name: member build and push docker image to ecr
-        env:
-          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
-          REPOSITORY: member-service
-          IMAGE_TAG: latest
-        run: |
-          docker build \
-          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-          -f ./3.msa/member/Dockerfile ./3.msa/member
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            - name: gateway build and push docker image to ecr
+              env:
+                  # 우리의 ECR 주소를 여기다가 적어줘야 한다.
+                  REGISTRY: 384471040257.dkr.ecr.ap-northeast-2.amazonaws.com
+                  REPOSITORY: apigateway # 이건 ECR 레포지토리 명
+                  IMAGE_TAG: latest
+                  # 밑에는 도커 빌드 경로를 의미하는 것임.
+              run: |
+                  docker build \
+                  -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+                  -f ./3.msa/apigateway/Dockerfile ./3.msa/apigateway
+                  docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: eks kubectl apply
-        run: |
-          kubectl apply -f ./3.msa/member/k8s/depl_svc.yml
-          kubectl rollout restart deployment member-depl -n bradkim
+            - name: eks kubectl apply
+              run: |
+                  kubectl apply -f ./3.msa/apigateway/k8s/depl_svc.yml
+                  kubectl rollout restart deployment apigateway-depl -n hyunsub
 
-      - name: order build and push docker image to ecr
-        env:
-          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
-          REPOSITORY: ordering-service
-          IMAGE_TAG: latest
-        run: |
-          docker build \
-          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-          -f ./3.msa/ordering/Dockerfile ./3.msa/ordering
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-  
-      - name: eks kubectl apply
-        run: |
-          kubectl apply -f ./3.msa/ordering/k8s/depl_svc.yml
-          kubectl rollout restart deployment ordering-depl -n bradkim
-          
-      - name: product build and push docker image to ecr
-        env:
-          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
-          REPOSITORY: product-service
-          IMAGE_TAG: latest
-        run: |
-          docker build \
-          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-          -f ./3.msa/product/Dockerfile ./3.msa/product
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-  
-      - name: eks kubectl apply
-        run: |
-          kubectl apply -f ./3.msa/product/k8s/depl_svc.yml
-          kubectl rollout restart deployment product-depl -n bradkim
+            - name: member build and push docker image to ecr
+              env:
+                  REGISTRY: 384471040257.dkr.ecr.ap-northeast-2.amazonaws.com
+                  REPOSITORY: member-service # 이건 ECR 레포지토리 명
+                  IMAGE_TAG: latest
+                  # 밑에는 도커 빌드 경로를 의미하는 것임.
+              run: |
+                  docker build \
+                  -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+                  -f ./3.msa/member/Dockerfile ./3.msa/member
+                  docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+            - name: eks kubectl apply
+              run: |
+                  kubectl apply -f ./3.msa/member/k8s/depl_svc.yml
+                  kubectl rollout restart deployment member-depl -n hyunsub
+
+            # - name: order build and push docker image to ecr
+            #   env:
+            #       REGISTRY: 384471040257.dkr.ecr.ap-northeast-2.amazonaws.com
+            #       REPOSITORY: ordering-service
+            #       IMAGE_TAG: latest
+            #   run: |
+            #       docker build \
+            #       -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+            #       -f ./3.msa/ordering/Dockerfile ./3.msa/ordering
+            #       docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+            # - name: eks kubectl apply
+            #   run: |
+            #       kubectl apply -f ./3.msa/ordering/k8s/depl_svc.yml
+            #       kubectl rollout restart deployment ordering-depl -n hyunsub
+
+            # - name: product build and push docker image to ecr
+            #   env:
+            #       REGISTRY: 384471040257.dkr.ecr.ap-northeast-2.amazonaws.com
+            #       REPOSITORY: product-service
+            #       IMAGE_TAG: latest
+            #   run: |
+            #       docker build \
+            #       -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+            #       -f ./3.msa/product/Dockerfile ./3.msa/product
+            #       docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+            # - name: eks kubectl apply
+            #   run: |
+            #       kubectl apply -f ./3.msa/product/k8s/depl_svc.yml
+            #       kubectl rollout restart deployment product-depl -n hyunsub

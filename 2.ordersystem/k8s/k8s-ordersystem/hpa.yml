@@ -4,21 +4,20 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: ordersystem-backend-hpa
-  namespace: bradkim
-spec: 
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: ordersystem-backend
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 30
-
+    name: ordersystem-backend-hpa
+    namespace: hyunsub
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: ordersystem-backend # deployment랑 이름을 일치시켜주자.
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 30
 # 메트릭 서버와 HPA를 통한 pod 현황 조회
-# kubectl get hpa ordersystem-backend-hpa -n bradkim -w
+# HPA를 조회하면서 POD의 현황까지 조회할 수 있다.
+# kubectl get hpa ordersystem-backend-hpa -n hyunsub -w
 
 # 부하 간단 테스트
 # 특정 pod에 접속
 # while true; do curl -s http://ordersystem-backend-service/product/list; done
-

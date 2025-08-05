@@ -1,24 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: argocd-server-ingress
-  namespace: argocd
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: my-issuer
+    name: argocd-server-ingress
+    namespace: argocd
+    annotations:
+        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: my-issuer
 spec:
-  tls:
-  - hosts:
-      - argo.bradkim197.shop
-    secretName: argo-bradkim197-com-tls
-  rules:
-  - host: argo.bradkim197.shop
-    http:
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: argocd-server
-              port:
-                number: 80
+    tls:
+        - hosts:
+              - argo.esktest098.store
+          secretName: argo-esktest098-com-tls
+    rules:
+        - host: argo.esktest098.store
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            # 어떠 서비스로 갈거냐?
+                            # argocd-server 서비스의 80으로 가겠다는 설정이다.
+                            name: argocd-server
+                            port:
+                                number: 80

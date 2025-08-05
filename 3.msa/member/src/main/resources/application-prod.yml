@@ -1,34 +1,35 @@
 eureka:
-  client:
-    enabled: false
+    client:
+        enabled: false # 배포를 할때는 유레카를 쓰지 않는다고 설정
 
 spring:
-  config:
-    activate:
-      on-profile: prod
-  application:
-    name: member-service
-  redis:
-    host: redis-service
-    port: 6379
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST}:3306/ordermsa?useSSL=false&allowPublicKeyRetrieval=true
-    username: admin
-    password: ${DB_PW}
-  jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    generate-ddl: true
-    hibernate:
-      ddl-auto: create
-    show_sql: true
+    config:
+        activate:
+            on-profile: prod
+    application:
+        name: member-service
+    redis:
+        data:
+            host: redis-service # 배포 버전에서는 redis를 찾을 때 redis 서비스 자원을 찾아서 redis Pod로 라우팅이 되도록 만듦.
+            port: 6379
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://${DB_HOST}:3306/ordermsa?useSSL=false&allowPublicKeyRetrieval=true
+        username: admin
+        password: ${DB_PW}
+    jpa:
+        database: mysql
+        database-platform: org.hibernate.dialect.MySQL8Dialect
+        generate-ddl: true
+        hibernate:
+            ddl-auto: create
+        show_sql: true
 
 jwt:
-  expiration: 1000
-  #  인코딩된 문자 32자 이상 필요.(특수문자안됨)
-  #  beyondaccesstokensecretkeybeyondaccesstokensecretkeybeyondaccesstokensecretkey
-  secretKey: YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
-  expirationRt: 288000
-  #  beyondrefreshtokensecretkeybeyondrefreshtokensecretkeybeyondrefreshtokensecretkey
-  secretKeyRt: YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5
+    expiration: 1000
+    #  인코딩된 문자 32자 이상 필요.(특수문자안됨)
+    #  beyondaccesstokensecretkeybeyondaccesstokensecretkeybeyondaccesstokensecretkey
+    secretKey: YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
+    expirationRt: 288000
+    #  beyondrefreshtokensecretkeybeyondrefreshtokensecretkeybeyondrefreshtokensecretkey
+    secretKeyRt: YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5
